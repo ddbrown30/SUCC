@@ -1,1 +1,180 @@
-{}
+{
+    "succ": {
+        "ENHANCED_CONDITIONS": {
+            "ApplyConditionsDialog": {
+                "Desc": "Sélectionnez les conditions à appliquer aux cibles sélectionnées. Si une cible est déjà associée à une condition, celle-ci sera ignorée.",
+                "FilterInputTitle": "Trier par nom",
+                "Title": "Appliquer les conditions"
+            },
+            "ChatCard": {
+                "Heading": "Modifications apportées aux états spéciaux",
+                "HeadingActive": "Conditions spéciales actives",
+                "Title": {
+                    "Active": "Active",
+                    "Added": "Ajouté",
+                    "Removed": "Supprimé"
+                }
+            },
+            "ConditionLab": {
+                "BadReference": "Impossible de créer un lien vers le contenu déposé (personnage, objet, journal, etc.)",
+                "Buttons": {
+                    "Options": "Options"
+                },
+                "FilterInputTitle": "Trier par nom",
+                "NoReference": "--Aucune référence-- (Faites glisser un journal, un élément, un acteur, etc. dans ce champ pour le définir)",
+                "SortAnchorTitle": "Trier par nom - non trié (cliquez pour modifier)",
+                "SortAnchorTitle_asc": "Trier par nom - de A à Z (cliquez pour modifier)",
+                "SortAnchorTitle_desc": "Trier par nom - de Z à A (cliquez pour modifier)",
+                "SortDirectionSave": {
+                    "CheckboxText": "Ne plus afficher ce message",
+                    "Content": "Cliquez sur « Oui » pour enregistrer la liste des conditions avec le sens de tri actuel. Cliquez sur « Non » pour annuler l'enregistrement.",
+                    "Title": "Enregistrer le classement avec le sens de tri ?"
+                }
+            },
+            "DefaultConditionsMenu": {
+                "Dialog": {
+                    "RefreshMapDefaultsB": "Souhaitez-vous actualiser votre liste actuelle afin qu'elle corresponde aux nouvelles valeurs par défaut ?<p>Cela garantira que la liste des conditions corresponde aux valeurs par défaut, mais ne réinitialisera aucune condition existante. Nous nous efforcerons de conserver autant que possible l'ordre de tri actuel.",
+                    "RefreshMapDefaultsT": "Réinitialiser les paramètres par défaut"
+                },
+                "Groups": {
+                    "CommonD": "Conditions couramment utilisées issues de la liste des conditions par défaut du système SWADE.",
+                    "CommonN": "Conditions communes du système",
+                    "DeadlandsD": "Conditions associées à Deadlands.",
+                    "DeadlandsN": "Deadlands",
+                    "ExpandedPowersD": "Conditions associées aux pouvoirs dans les règles de base.",
+                    "ExpandedPowersN": "Pouvoirs étendus",
+                    "GenericD": "Conditions génériques pour une utilisation à des fins générales.",
+                    "GenericN": "Générique",
+                    "PathfinderPowersD": "Conditions associées aux pouvoirs dans Pathfinder.",
+                    "PathfinderPowersN": "Pouvoirs de Pathfinder",
+                    "PowerModifiersD": "Conditions associées aux modificateurs de pouvoir courants.",
+                    "PowerModifiersN": "Modificateurs de pouvoir",
+                    "RareD": "Conditions rarement utilisées issues de la liste des conditions par défaut du système SWADE.",
+                    "RareN": "Conditions système rares",
+                    "RequiredD": "Conditions obligatoires au bon fonctionnement du système. Elles ne peuvent pas être désactivées.",
+                    "RequiredN": "Condition obligatoires",
+                    "UncommonD": "Conditions moins fréquemment utilisées parmi la liste des conditions par défaut du système SWADE.",
+                    "UncommonN": "Conditions système inhabituelles",
+                    "UnknownD": "Conditions ajoutées à partir de sources inconnues.",
+                    "UnknownN": "Conditions inconnues"
+                },
+                "Title": "Condition par défaut"
+            },
+            "MacroConfig": {
+                "ApplyHeading": "Appliquer la macro",
+                "Description": "Sélectionnez une macro à exécuter lorsque cette condition est ajoutée à un jeton/acteur ou supprimée de celui-ci",
+                "Heading": "Macros à éxécuter",
+                "RemoveHeading": "Enlever la macro",
+                "SelectNone": "-- pas de macro --"
+            },
+            "OptionConfig": {
+                "BlindToken": {
+                    "Label": "Jeton aveugle",
+                    "Notes": "Une fois appliquée, cette condition rendra également le pion « aveugle » (le joueur ne pourra plus voir les autres pions sur la carte)"
+                },
+                "BoostTrait": {
+                    "Label": "Améliorer un Trait",
+                    "Notes": "Lorsqu’elle est appliquée, cette condition ouvre la boîte de dialogue « Améliorer un Trait »"
+                },
+                "Burrow": {
+                    "Label": "Enfouissement",
+                    "Notes": "Une fois appliquée, cette condition rendra le jeton concerné invisible aux systèmes de détection visuels"
+                },
+                "ColdBodied": {
+                    "Label": "Corps froid",
+                    "Notes": "Une fois appliquée, cette condition empêchera le jeton concerné d'apparaître lors de la détection par « Détection de chaleur »"
+                },
+                "Conviction": {
+                    "Label": "Conviction",
+                    "Notes": "Lorsqu’elle est appliquée, cette condition activera « Conviction » sur le jeton concerné"
+                },
+                "Deflection": {
+                    "Label": "Déflexion",
+                    "Notes": "Une fois appliquée, cette condition ouvrira la boîte de dialogue « déflexion »"
+                },
+                "Encumbered": {
+                    "Label": "Encombré",
+                    "Notes": "Si cette option est activée, cette condition sera appliquée aux personnages qui dépassent la limite de charge, à condition que le paramètre « Appliquer les pénalités d'encombrement » dans SWADE soit activé (et tiendra également compte du paramètre correspondant dans BRSW)"
+                },
+                "Fly": {
+                    "Label": "Vol",
+                    "Notes": "Une fois appliquée, cette condition rendra le jeton concerné invisible pour la détection « Vibration » et ouvrira la boîte de dialogue « Vol »"
+                },
+                "Heading": "Options",
+                "LowerTrait": {
+                    "Label": "Diminuer un Trait",
+                    "Notes": "Lorsqu’elle est appliquée, cette condition ouvrira la boîte de dialogue « Diminuer un Trait »"
+                },
+                "MarkInvisible": {
+                    "Label": "Marquer comme invisible",
+                    "Notes": "Lorsqu’elle est appliquée, cette condition entraînera le marquage du jeton concerné comme « invisible »"
+                },
+                "Numb": {
+                    "Label": "Engourdi",
+                    "Notes": "Lorsqu’elle est appliquée, cette condition ouvrira la boîte de dialogue « Engourdi »"
+                },
+                "Protection": {
+                    "Label": "Protection",
+                    "Notes": "Lorsqu’elle est appliquée, cette condition ouvrira la boîte de dialogue « Protection »"
+                },
+                "Smite": {
+                    "Label": "Frappe",
+                    "Notes": "Lorsque cette condition est appliquée, la boîte de dialogue « Frappe» s'ouvre"
+                },
+                "SpecialStatusEffectOverride": {
+                    "Title": "Remplacer la condition existante pour cet effet de statut ?"
+                },
+                "Tabs": {
+                    "General": "Général",
+                    "SpecialEffects": "Effets spéciaux"
+                }
+            },
+            "OutputChatConfirm": {
+                "Content": "Cliquez sur « Oui » pour activer l'option « Afficher dans le chat » pour toutes les conditions",
+                "Title": "Activer l'affichage dans le chat pour toutes les conditions ?"
+            },
+            "SystemIconRefresh": {
+                "Content": "Le paramètre « Utiliser les icônes système » a été modifié. Souhaitez-vous réinitialiser les icônes pour toutes les conditions ?<br><br>",
+                "Title": "Réinitialiser les icônes ?"
+            },
+            "TokenDisplaySettingsMenu": {
+                "Header": {
+                    "Client": "Local",
+                    "World": "Valeurs par défaut"
+                },
+                "Hint": "Contrôle l'apparence et le comportement des icônes d'effets des jetons",
+                "PositioningChoices": {
+                    "Clockwise": "Cercle (sens horaire)",
+                    "Columns": "Colonnes",
+                    "Counterclockwise": "Cercle (sens anti-horaire)",
+                    "Rows": "Lignes"
+                },
+                "Settings": {
+                    "BGShapeD": "La forme de l'arrière-plan derrière les icônes d'effets.",
+                    "BGShapeN": "Forme d'arrière-plan",
+                    "PositioningD": "Comment les icônes d'effet sont positionnées sur le jeton.",
+                    "PositioningN": "Positionnement des icônes d'effets",
+                    "SizeD": "Définit la taille des icônes d'effets sur le jeton.",
+                    "SizeN": "Taille de l'icône d'effet"
+                },
+                "ShapeChoices": {
+                    "Circle": "Cercle",
+                    "None": "Aucun",
+                    "Rect": "Rectangle",
+                    "RoundedRect": "Rectangle arrondi"
+                },
+                "SizeChoices": {
+                    "Large": "Grand",
+                    "Medium": "Moyen",
+                    "Small": "Petit",
+                    "XtraLarge": "Très grand"
+                },
+                "Title": "Paramètres d'affichage des jetons",
+                "WorldDefault": "Valeur par défaut du monde"
+            }
+        },
+        "ID": "succ",
+        "NAME": "SWADE Ultimate Condition Changer",
+        "SHORT_NAME": "SUCC"
+    }
+}
