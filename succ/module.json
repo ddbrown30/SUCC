@@ -72,6 +72,12 @@
             "name": "Português",
             "path": "lang/pt.json",
             "flags": {}
+        },
+        {
+            "lang": "fr",
+            "name": "Francais",
+            "path": "lang/fr.json",
+            "flags": {}
         }
     ],
     "packs": [
