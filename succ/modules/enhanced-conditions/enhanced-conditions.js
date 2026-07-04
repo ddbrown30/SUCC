@@ -1085,7 +1085,8 @@ export class EnhancedConditions {
                 changes: c.activeEffect?.changes || [],
                 duration: c.duration || c.activeEffect?.duration || {},
                 description: c.activeEffect?.description || '',
-                statuses: c.statuses
+                statuses: c.statuses,
+                showIcon: c.activeEffect?.showIcon ?? CONST.ACTIVE_EFFECT_SHOW_ICON.ALWAYS,
             }
             statusEffects.push(effect);
         };
