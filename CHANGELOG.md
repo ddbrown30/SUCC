@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ☮️ Peace in the world, or the world in pieces. 🕊️
 
+## [8.1.0] - 2026-07-04 aka "Telemetry Update"
+## Added
+- **WARNING: Added telemetry.** This is purely to monitor API usage in order to refine, enhance, and possibly sunsetting API functions. If you're uncomfortable with that feel free to opt-out in the settings.
+- Added a warning message with the option to opt-out of telemetry on first launch after updating.
+- Added Brazilian Portugese language via Weblate by @Arnok136 (Arnok Sden).
+## Fixed
+- Icons not showing on tokens by now using the showIcon property.
+
 ## [8.0.6] - 2026-06-26 aka "Yet More Fixes"
 **PLEASE NOTE: This version is NOT backwards compatible with Foundry v13.**
 This release includes the changes in 8.0.5 except for a bad line of code.
