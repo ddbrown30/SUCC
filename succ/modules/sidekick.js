@@ -810,8 +810,10 @@ export class TelemetryUtils {
 
             try {
                 Error.prepareStackTrace = (_, stack) => stack;
+
                 const err = new Error();
                 Error.captureStackTrace(err, getCallerSource);
+
                 const stack = err.stack;
                 for (const s of stack) {
                     const filename = s?.getFileName?.();
