@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ☮️ Peace in the world, or the world in pieces. 🕊️
 
+## [8.1.1] - 2026-07-09 aka "Corrections relatives à la télémétrie"
+**This module uses telemetry in order to improve the API. If that makes you uncomfortable you can opt-out in the settings.**
+## Added
+- Finished French language via Weblate by @Arnok136 (Arnok Sden).
+## Fixed
+- Fixed a couple issues related to the telemetry.
+
 ## [8.1.0] - 2026-07-04 aka "Telemetry Update"
 ## Added
 - **WARNING: Added telemetry.** This is purely to monitor API usage in order to refine, enhance, and possibly sunsetting API functions. If you're uncomfortable with that feel free to opt-out in the settings.
 - Added a warning message with the option to opt-out of telemetry on first launch after updating.
-- Added Brazilian Portugese language via Weblate by @Arnok136 (Arnok Sden).
+- Added Brazilian Portugese language via Weblate by @SantosSi.
+- Added French language via Weblate by @Arnok136 (Arnok Sden).
 ## Fixed
 - Icons not showing on tokens by now using the showIcon property.
 
