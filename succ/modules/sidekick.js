@@ -810,10 +810,8 @@ export class TelemetryUtils {
 
             try {
                 Error.prepareStackTrace = (_, stack) => stack;
-
                 const err = new Error();
                 Error.captureStackTrace(err, getCallerSource);
-
                 const stack = err.stack;
                 for (const s of stack) {
                     const filename = s?.getFileName?.();
@@ -837,7 +835,7 @@ export class TelemetryUtils {
                     return "macro";
                 }
 
-                return stack && stack.length ? stack[stack.length - 1] : "Unknown";
+                return stack?.[0]?.toString() ?? "Unknown";
             } finally {
                 Error.prepareStackTrace = original;
             }
