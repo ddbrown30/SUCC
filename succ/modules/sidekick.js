@@ -816,7 +816,7 @@ export class TelemetryUtils {
 
                 const stack = err.stack;
                 for (const s of stack) {
-                    const filename = s.getFileName();
+                    const filename = s?.getFileName?.();
                     if (!filename) continue;
 
                     let path = new URL(filename).pathname;
@@ -837,7 +837,7 @@ export class TelemetryUtils {
                     return "macro";
                 }
 
-                return "";
+                return stack && stack.length ? stack[stack.length - 1] : "Unknown";
             } finally {
                 Error.prepareStackTrace = original;
             }
