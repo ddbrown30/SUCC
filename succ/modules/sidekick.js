@@ -837,7 +837,7 @@ export class TelemetryUtils {
                     return "macro";
                 }
 
-                return stack && stack.length ? stack[stack.length - 1] : "Unknown";
+                return stack?.[0]?.toString() ?? "Unknown";
             } finally {
                 Error.prepareStackTrace = original;
             }
