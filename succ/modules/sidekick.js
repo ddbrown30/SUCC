@@ -805,16 +805,21 @@ export class TelemetryUtils {
     }
 
     static sendAPITelemetry(apiFunction, properties = {}) {
-        function getCallerSource() {
+        function getCallerInfo() {
             const original = Error.prepareStackTrace;
 
             try {
-                Error.prepareStackTrace = (_, stack) => stack;
-
                 const err = new Error();
-                Error.captureStackTrace(err, getCallerSource);
+                Error.captureStackTrace(err, getCallerInfo);
 
+                Error.prepareStackTrace = (_, stack) => stack;
                 const stack = err.stack;
+
+                const stackStrings = stack
+                    .map(s => s.toString().replace(/https?:\/\/[^/]+/g, ""))
+                    .filter(s => !s.includes("TelemetryUtils.sendAPITelemetry"));
+                let source = "Unknown";
+
                 for (const s of stack) {
                     const filename = s?.getFileName?.();
                     if (!filename) continue;
@@ -825,29 +830,34 @@ export class TelemetryUtils {
                     if (path.startsWith("/modules/")) {
                         path = path.substring("/modules/".length);
                         const nextSlash = path.indexOf("/");
-                        return path.substring(0, nextSlash);
+                        source = path.substring(0, nextSlash);
+                        break;
                     }
 
                     if (path.startsWith("/system/")) {
                         path = path.substring("/system/".length);
                         const nextSlash = path.indexOf("/");
-                        return path.substring(0, nextSlash);
+                        source = path.substring(0, nextSlash);
+                        break;
                     }
 
-                    return "macro";
+                    source = "macro";
+                    break;
                 }
 
-                return stack?.[0]?.toString() ?? "Unknown";
+                return { source, stackStrings };
             } finally {
                 Error.prepareStackTrace = original;
             }
         }
 
+        const callerInfo = getCallerInfo();
         properties = {
             ...properties,
-            callerSource: getCallerSource(),
+            source: callerInfo.source,
+            stackStrings: callerInfo.stackStrings,
         };
-        TelemetryUtils.sendTelemetry("api_call_" + apiFunction.name, false, properties);
+        TelemetryUtils.sendTelemetry("api_call_" + apiFunction.name, !game.user.isGM, properties);
     }
 
     static showOneTimeMessage() {
