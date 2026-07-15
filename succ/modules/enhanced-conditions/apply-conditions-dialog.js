@@ -41,6 +41,8 @@ export class ApplyConditionsDialog extends HandlebarsApplicationMixin(Applicatio
         this.conditionMap = foundry.utils.duplicate(Sidekick.getSetting(BUTLER.SETTING_KEYS.enhancedConditions.map));
         this.conditionMap.forEach(c => c.name = game.i18n.localize(c.name));
 
+        this.sortDirection = Sidekick.getSetting(BUTLER.SETTING_KEYS.enhancedConditions.applyConditionSortDirection);
+
         this.searchFilter = new foundry.applications.ux.SearchFilter({
             inputSelector: 'input[name="filter-list"]',
             contentSelector: ".condition-selection",
@@ -90,7 +92,7 @@ export class ApplyConditionsDialog extends HandlebarsApplicationMixin(Applicatio
     }
 
     _onClickSortButton() {
-        const sortDirection = this.sortDirection ?? "";
+        const sortDirection = this.sortDirection;
         switch (sortDirection) {
             case "":
                 this.sortDirection = "asc";
@@ -107,6 +109,8 @@ export class ApplyConditionsDialog extends HandlebarsApplicationMixin(Applicatio
             default:
                 break;
         }
+
+        Sidekick.setSetting(BUTLER.SETTING_KEYS.enhancedConditions.applyConditionSortDirection, this.sortDirection);
 
         return this.render(true);
     }

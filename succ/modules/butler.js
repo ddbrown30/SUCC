@@ -200,6 +200,7 @@ export const FLAGS = {
 
 export const SETTING_KEYS = {
     enhancedConditions: {
+        applyConditionSortDirection: "appConditionSortDirection",
         coreEffects: "coreStatusEffects",
         map: "activeConditionMap",
         defaultConditions: "defaultConditions",
