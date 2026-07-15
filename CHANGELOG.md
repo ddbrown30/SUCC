@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ☮️ Peace in the world, or the world in pieces. 🕊️
 
+## [8.1.2] - 2026-07-15 aka "Telemetry hotfix"
+**This module uses telemetry in order to improve the API. If that makes you uncomfortable you can opt-out in the settings.**
+## Fixed
+- Fixed a couple issues related to the telemetry on Firefox.
+
 ## [8.1.1] - 2026-07-09 aka "Corrections relatives à la télémétrie"
 **This module uses telemetry in order to improve the API. If that makes you uncomfortable you can opt-out in the settings.**
 ## Added
