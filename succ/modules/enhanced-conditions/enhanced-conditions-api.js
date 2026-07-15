@@ -16,25 +16,23 @@ export class EnhancedConditionsAPI {
      * @param {String[] | String} conditionId  the id of the condition to add
      * @param {(Actor[] | Token[] | Actor | Token)} [entities=null] one or more Actors or Tokens to apply the Condition to
      * @param {Boolean} [options.allowDuplicates=false]  if one or more of the Conditions specified is already active on the Entity, this will still add the Condition. Use in conjunction with `replaceExisting` to determine how duplicates are handled
-     * @param {Boolean} [options.replaceExisting=false]  whether or not to replace existing Conditions with any duplicates in the `conditionName` parameter. If `allowDuplicates` is true and `replaceExisting` is false then a duplicate condition is created. Has no effect if `allowDuplicates` is `false`
      * @param {Boolean} [options.forceOverlay=false]  if true, this condition will appear as an overlay regardless of its normal behaviour
      * @param {Boolean} [options.duration=undefined]  if set, this will override the duration on the effect
      * @param {Boolean} [options.effectOptions]  additional options that are added to a property to be used by elsewhere in the code
      * @example
-     * // Add the Condition "Blinded" to an Actor named "Bob". Duplicates will not be created.
+     * //Add the Condition "Blinded" to an Actor named "Bob". Duplicates will not be created.
      * game.succ.addCondition("Blinded", game.actors.getName("Bob"));
      * @example
-     * // Add the Condition "Charmed" to the currently controlled Token/s. Duplicates will not be created.
+     * //Add the Condition "Charmed" to the currently controlled Token/s. Duplicates will not be created.
      * game.succ.addCondition("Charmed");
      * @example
-     * // Add the Conditions "Blinded" and "Charmed" to the targeted Token/s and create duplicates, replacing any existing Conditions of the same names.
-     * game.succ.addCondition(["Blinded", "Charmed"], [...game.user.targets], {allowDuplicates: true, replaceExisting: true});
+     * //Add the Conditions "Blinded" and "Charmed" to the targeted Token/s and create duplicates
+     * game.succ.addCondition(["Blinded", "Charmed"], [...game.user.targets], {allowDuplicates: true});
      */
-    static async addCondition(conditionId, entities=null, {allowDuplicates=false, replaceExisting=false, forceOverlay=false, duration=undefined, effectOptions={}, sendTelemetry=true}={}) {
+    static async addCondition(conditionId, entities=null, {allowDuplicates=false, forceOverlay=false, duration=undefined, effectOptions={}, sendTelemetry=true}={}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.addCondition, {
                 allowDuplicates,
-                replaceExisting,
                 forceOverlay,
                 duration,
                 effectOptions,
@@ -42,7 +40,7 @@ export class EnhancedConditionsAPI {
         }
 
         if (!entities) {
-            // First check for any controlled tokens
+            //First check for any controlled tokens otherwise use the user's character
             if (canvas?.tokens?.controlled.length) entities = canvas.tokens.controlled;
             else if (game.user.character) entities = game.user.character;
         }
@@ -53,32 +51,25 @@ export class EnhancedConditionsAPI {
             return;
         }
 
-        let conditions = EnhancedConditions.lookupConditionById(conditionId);
+        entities = Sidekick.toArray(entities);
 
-        if (!conditions) {
+        const conditions = Sidekick.toArray(EnhancedConditions.lookupConditionById(conditionId));
+        if (!conditions.length) {
             ui.notifications.error(`${game.i18n.localize("ENHANCED_CONDITIONS.AddCondition.Failed.NoCondition")} ${conditionId}`);
             console.log(`SWADE Ultimate Condition Changer - Enhanced Conditions | ${game.i18n.localize("ENHANCED_CONDITIONS.AddCondition.Failed.NoCondition")}`, conditionId);
             return;
         }
 
-        conditions = conditions instanceof Array ? conditions : [conditions];
-        const conditionIds = conditions.map(c => c.id);
-
         let effects = EnhancedConditionsAPI.getActiveEffect(conditions, { sendTelemetry: false });
-
         if (!effects) {
             ui.notifications.error(`${game.i18n.localize("ENHANCED_CONDITIONS.AddCondition.Failed.NoEffect")} ${conditions}`);
             console.log(`SWADE Ultimate Condition Changer - Enhanced Condition | ${game.i18n.localize("ENHANCED_CONDITIONS.AddCondition.Failed.NoEffect")}`, conditions);
             return;
         }
 
-        effects = effects instanceof Array ? EnhancedConditions._prepareActiveEffects(effects) : EnhancedConditions._prepareActiveEffects([effects]);
+        effects = EnhancedConditions._prepareActiveEffects(Sidekick.toArray(effects));
 
-        if (entities && !(entities instanceof Array)) {
-            entities = [entities];
-        }
-
-        let resultEffects = []
+        let resultEffects = [];
 
         for (let entity of entities) {
             const actor = EnhancedConditionsAPI.getActorFromEntity(entity, { sendTelemetry: false });
@@ -87,7 +78,7 @@ export class EnhancedConditionsAPI {
 
             for (const effect of effects) {
                 if (forceOverlay) {
-                    effect.flags.core = effect.flags.core ? effect.flags.core : {};
+                    effect.flags.core ??= {};
                     effect.flags.core.overlay = true;
                 }
 
@@ -95,75 +86,47 @@ export class EnhancedConditionsAPI {
                     effect.duration.rounds = duration;
                 }
 
-                if (effectOptions) {
-                    foundry.utils.setProperty(effect, `flags.${BUTLER.NAME}.${BUTLER.FLAGS.enhancedConditions.effectOptions}`, effectOptions);
+                if (Object.entries(effectOptions ?? {}).length) {
+                    Sidekick.setModuleFlag(effect, BUTLER.FLAGS.enhancedConditions.effectOptions, effectOptions);
                 }
             }
 
+            const conditionIds = conditions.map(c => c.id);
             const hasDuplicates = EnhancedConditionsAPI.hasCondition(conditionIds, actor, { warn: false, sendTelemetry: false });
             const newEffects = [];
-            const updateEffects = [];
+            const duplicateEffects = [];
 
-
-            // If there are duplicate Condition effects on the Actor take extra steps
+            //If there are duplicate condition effects on the actor take extra steps
             if (hasDuplicates) {
-                // @todo #348 determine the best way to raise warnings in this scenario
-                /*
-                if (warn) {
-                    ui.notifications.warn(`${entity.name}: ${conditionId} ${game.i18n.localize("ENHANCED_CONDITIONS.AddCondition.Failed.AlreadyActive")}`);
-                    console.log(`SWADE Ultimate Condition Changer - Enhanced Conditions | ${entity.name}: ${conditionId} ${game.i18n.localize("ENHANCED_CONDITIONS.AddCondition.Failed.AlreadyActive")}`);
-                }
-                */
+                //Get the existing conditions on the actor
+                const existingConditionEffects = Sidekick.toArray(EnhancedConditionsAPI.getConditionEffects(actor, { warn: false, sendTelemetry: false }));
+                const existingConditionIds = new Set(existingConditionEffects.map(e => Sidekick.conditionId(e)));
 
-                // Get the existing conditions on the actor
-                let existingConditionEffects = EnhancedConditionsAPI.getConditionEffects(actor, {warn: false, sendTelemetry: false});
-                existingConditionEffects = existingConditionEffects instanceof Array ? existingConditionEffects : [existingConditionEffects];
-
-                // Loop through the effects sorting them into either existing or new effects
+                //Loop through the effects sorting them into either duplicate or new effects
                 for (const effect of effects) {
-                    if (!allowDuplicates) {
-                        conditions = conditions.filter(c => c.id != effect.id);
-                    }
-
-                    // Scenario 1: if duplicates are allowed, but existing conditions are not replaced, everything is new
-                    if (allowDuplicates && !replaceExisting) {
+                    const conditionId = Sidekick.conditionId(effect);
+                    if (!existingConditionIds.has(conditionId)) {
                         newEffects.push(effect);
-                        continue;
+                    } else if (allowDuplicates) {
+                        duplicateEffects.push(effect);
                     }
-
-                    const conditionId = foundry.utils.getProperty(effect, `flags.${BUTLER.NAME}.${BUTLER.FLAGS.enhancedConditions.conditionId}`);
-                    const matchedConditionEffects = existingConditionEffects.filter(e => e.getFlag(BUTLER.NAME, BUTLER.FLAGS.enhancedConditions.conditionId) === conditionId);
-
-                    // Scenario 2: if duplicates are allowed, and existing conditions should be replaced, add any existing conditions to update
-                    if (replaceExisting) {
-                        for (const matchedCondition of matchedConditionEffects) {
-                            updateEffects.push({id: matchedCondition.id, ...effect});
-                        }
-                    }
-
-                    // Scenario 2 cont'd: if the condition is not matched, it must be new, so add to the new effects
-                    // Scenario 3: if duplicates are not allowed, and existing conditions are not replaced, just add the new conditions
-                    if (!matchedConditionEffects.length) newEffects.push(effect);
                 }
             }
 
-            // If the any of the conditions remove others, remove all conditions
-            // @todo maybe add this to the logic above?
-            if (conditions.some(c => c?.options?.removeOthers)) {
-                await EnhancedConditionsAPI.removeAllConditions(actor, {warn: false, sendTelemetry: false});
-            }
+            if (hasDuplicates) {
+                if (newEffects.length) {
+                    const createdDocuments = await actor.createEmbeddedDocuments("ActiveEffect", newEffects, { keepId: true });
+                    resultEffects.push(...createdDocuments);
+                }
 
-            const createData = hasDuplicates ? newEffects : effects;
-            const updateData = updateEffects;
-
-            if (createData.length) {
-                const createdDocuments = await actor.createEmbeddedDocuments("ActiveEffect", createData, { keepId: true });
-                resultEffects = resultEffects.concat(createdDocuments);
-            }
-
-            if (updateData.length) {
-                const updatedDocuments = await actor.updateEmbeddedDocuments("ActiveEffect", updateData);
-                resultEffects = resultEffects.concat(updatedDocuments);
+                if (duplicateEffects.length) {
+                    //We create duplicate effects with keepId: false otherwise they Foundry will reject them
+                    const createdDocuments = await actor.createEmbeddedDocuments("ActiveEffect", duplicateEffects, { keepId: false });
+                    resultEffects.push(...createdDocuments);
+                }
+            } else {
+                const createdDocuments = await actor.createEmbeddedDocuments("ActiveEffect", effects, { keepId: true });
+                resultEffects.push(...createdDocuments);
             }
         }
 
@@ -176,10 +139,10 @@ export class EnhancedConditionsAPI {
      * @param {Actor | Token} entities  One or more Actors or Tokens
      * @param {Boolean} options.warn  whether or not to raise warnings on errors
      * @example
-     * // Remove Condition named "Blinded" from an Actor named Bob
+     * //Remove Condition named "Blinded" from an Actor named Bob
      * game.succ.removeCondition("Blinded", game.actors.getName("Bob"));
      * @example
-     * // Remove Condition named "Charmed" from the currently controlled Token, but don't show any warnings if it fails.
+     * //Remove Condition named "Charmed" from the currently controlled Token, but don't show any warnings if it fails.
      * game.succ.removeCondition("Charmed", {warn=false});
      */
     static async removeCondition(conditionId, entities=null, {warn=false, sendTelemetry=true}={}) {
@@ -188,52 +151,46 @@ export class EnhancedConditionsAPI {
         }
 
         if (!entities) {
-            // First check for any controlled tokens
+            //First check for any controlled tokens otherwise use the user's character
             if (canvas?.tokens?.controlled.length) entities = canvas.tokens.controlled;
             else if (game.user.character) entities = game.user.character;
-            else entities = null;
+
+            if (!entities) {
+                if (warn) ui.notifications.error(game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NoToken"));
+                console.log(`SWADE Ultimate Condition Changer - Enhanced Conditions | ${game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NoToken")}`);
+                return;
+            }
         }
 
-        if (!entities) {
-            if (warn) ui.notifications.error(game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NoToken"));
-            console.log(`SWADE Ultimate Condition Changer - Enhanced Conditions | ${game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NoToken")}`);
-            return;
-        }
+        entities = Sidekick.toArray(entities);
+        conditionId = Sidekick.toArray(conditionId);
 
-        if (!(conditionId instanceof Array)) conditionId = [conditionId];
-
-        const conditions = EnhancedConditions.lookupConditionById(conditionId);
-
-        if (!conditions || (conditions instanceof Array && !conditions.length)) {
+        const conditions = Sidekick.toArray(EnhancedConditions.lookupConditionById(conditionId));
+        if (!conditions.length) {
             if (warn) ui.notifications.error(`${game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NoCondition")} ${conditionId}`);
             console.log(`SWADE Ultimate Condition Changer - Enhanced Conditions | ${game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NoCondition")}`, conditionId);
             return;
         }
 
-        let effects = EnhancedConditionsAPI.getActiveEffect(conditions, { sendTelemetry: false });
-
-        if (!effects) {
+        const effects = Sidekick.toArray(EnhancedConditionsAPI.getActiveEffect(conditions, { sendTelemetry: false }));
+        if (!effects.length) {
             if (warn) ui.notifications.error(game.i18n.localize("ENHANCED_CONDTIONS.RemoveCondition.Failed.NoEffect"));
             console.log(`SWADE Ultimate Condition Changer - Enhanced Condition | ${game.i18n.localize("ENHANCED_CONDTIONS.RemoveCondition.Failed.NoEffect")}`, condition);
             return;
         }
 
-        if (!(effects instanceof Array)) effects = [effects];
-
-        if (entities && !(entities instanceof Array)) entities = [entities];
-
-        for (let entity of entities) {
+        for (const entity of entities) {
             const actor = EnhancedConditionsAPI.getActorFromEntity(entity, { sendTelemetry: false });
-            const activeEffects = actor.effects.contents.filter(e => effects.map(e => e.flags[BUTLER.NAME].conditionId).includes(e.getFlag(BUTLER.NAME, BUTLER.FLAGS.enhancedConditions.conditionId)));
+            const conditionIds = new Set(effects.map(e => Sidekick.conditionId(e)));
+            const activeEffects = actor.effects.contents.filter(e => conditionIds.has(Sidekick.conditionId(e)));
 
-            if (!activeEffects || (activeEffects && !activeEffects.length)) {
+            if (!activeEffects?.length) {
                 if (warn) ui.notifications.warn(`${conditionId} ${game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NotActive")}`);
                 console.log(`SWADE Ultimate Condition Changer - Enhanced Conditions | ${conditionId} ${game.i18n.localize("ENHANCED_CONDITIONS.RemoveCondition.Failed.NotActive")}")`);
-                return;
+                continue;
             }
 
             const effectIds = activeEffects.map(e => e.id);
-
             await actor.deleteEmbeddedDocuments("ActiveEffect", effectIds);
         }
     }
@@ -243,19 +200,19 @@ export class EnhancedConditionsAPI {
      * @param {Actors | Tokens} entities  One or more Actors or Tokens to remove Conditions from
      * @param {Boolean} options.warn  output notifications
      * @example
-     * // Remove all Conditions on an Actor named Bob
+     * //Remove all Conditions on an Actor named Bob
      * game.succ.removeAllConditions(game.actors.getName("Bob"));
      * @example
-     * // Remove all Conditions on the currently controlled Token
+     * //Remove all Conditions on the currently controlled Token
      * game.succ.removeAllConditions();
      */
-    static async removeAllConditions(entities=null, {warn=true, sendTelemetry=true}={}) {
+    static async removeAllConditions(entities=null, {warn=true, conditionsToKeep=[], sendTelemetry=true}={}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.removeAllConditions);
         }
 
         if (!entities) {
-            // First check for any controlled tokens
+            //First check for any controlled tokens
             if (canvas?.tokens?.controlled.length) entities = canvas.tokens.controlled;
             else if (game.user.character) entities = game.user.character;
         }
@@ -266,18 +223,17 @@ export class EnhancedConditionsAPI {
             return;
         }
 
-        entities = entities instanceof Array ? entities : [entities];
+        entities = Sidekick.toArray(entities);
+        conditionsToKeep = new Set(conditionsToKeep);
 
-        for (let entity of entities) {
+        for (const entity of entities) {
             const actor = EnhancedConditionsAPI.getActorFromEntity(entity, { sendTelemetry: false });
 
-            let actorConditionEffects = EnhancedConditionsAPI.getConditionEffects(actor, {warn: false, sendTelemetry: false});
+            const actorConditionEffects = Sidekick.toArray(EnhancedConditionsAPI.getConditionEffects(actor, { warn: false, sendTelemetry: false }));
+            if (!actorConditionEffects.length) continue;
 
-            if (!actorConditionEffects) continue;
-
-            actorConditionEffects = actorConditionEffects instanceof Array ? actorConditionEffects : [actorConditionEffects];
-
-            const effectIds = actorConditionEffects.map(ace => ace.id);
+            const effectIds = actorConditionEffects.filter(ace => !conditionsToKeep.has(Sidekick.conditionId(ace))).map(ace => ace.id);
+            if (!effectIds.length) continue;
 
             await actor.deleteEmbeddedDocuments("ActiveEffect", effectIds);
         }
@@ -292,7 +248,7 @@ export class EnhancedConditionsAPI {
      * @see EnhancedConditions#addCondition
      * @see EnhancedConditions#removeCondition
      */
-    static async toggleCondition(conditionId, entities=null, finalState, options={}, {sendTelemetry=true}={}) {
+    static async toggleCondition(conditionId, entities = null, finalState, options = {}, { sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.toggleCondition, {
                 finalState,
@@ -301,8 +257,8 @@ export class EnhancedConditionsAPI {
         }
 
         if (typeof finalState === 'undefined') {
-            let currentState = EnhancedConditionsAPI.hasCondition(conditionId, entities, { sendTelemetry: false })
-            finalState = !currentState
+            let currentState = EnhancedConditionsAPI.hasCondition(conditionId, entities, { sendTelemetry: false });
+            finalState = !currentState;
         }
         if (finalState) {
             return await EnhancedConditionsAPI.addCondition(conditionId, entities, { ...options, sendTelemetry: false });
@@ -317,7 +273,7 @@ export class EnhancedConditionsAPI {
      * @param {*} map the map to search through. If null, we'll use the current map
      * @param {*} options.warn whether or not to raise warnings on errors
      */
-    static getCondition(conditionId, map=null, {warn=false, sendTelemetry=true}={}) {
+    static getCondition(conditionId, map = null, { warn = false, sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.getCondition);
         }
@@ -337,7 +293,7 @@ export class EnhancedConditionsAPI {
      * @param {Actor | String | Object} entity the Actor or Token to get the condition from
      * @param {*} options.warn whether or not to raise warnings on errors
      */
-    static getConditionFrom(conditionId, entity, {warn=false, sendTelemetry=true}={}) {
+    static getConditionFrom(conditionId, entity, { warn = false, sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.getConditionFrom);
         }
@@ -365,11 +321,11 @@ export class EnhancedConditionsAPI {
             return;
         }
 
-        conditions = EnhancedConditions._prepareStatusEffects(conditions);
-        conditions = conditions instanceof Array ? conditions : [conditions];
+        conditions = Sidekick.toArray(EnhancedConditions._prepareStatusEffects(conditions));
 
         const conditionEffect = actor.effects.contents.find(ae => {
-            return conditions.find(e => e?.flags[BUTLER.NAME][BUTLER.FLAGS.enhancedConditions.conditionId] === ae.getFlag(BUTLER.NAME, BUTLER.FLAGS.enhancedConditions.conditionId));
+            const aeId = Sidekick.conditionId(ae);
+            return aeId !== undefined && conditions.find(e => Sidekick.conditionId(e) === aeId);
         });
 
         return conditionEffect;
@@ -381,22 +337,22 @@ export class EnhancedConditionsAPI {
      * @param {Boolean} options.warn  whether or not to raise warnings on errors
      * @returns {Array} entityConditionMap  a mapping of conditions for each provided entity
      * @example
-     * // Get conditions for an Actor named "Bob"
+     * //Get conditions for an Actor named "Bob"
      * game.succ.getConditions(game.actors.getName("Bob"));
      * @example
-     * // Get conditions for the currently controlled Token
+     * //Get conditions for the currently controlled Token
      * game.succ.getConditions();
      */
-    static getConditions(entities=null, {warn=true, sendTelemetry=true}={}) {
+    static getConditions(entities = null, { warn = true, sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.getConditions);
         }
 
         if (!entities) {
-            // First check for any controlled tokens
+            //First check for any controlled tokens
             if (canvas?.tokens?.controlled.length) entities = canvas.tokens.controlled;
 
-            // Then check if the user has an assigned character
+            //Then check if the user has an assigned character
             else if (game.user.character) entities = game.user.character;
         }
 
@@ -415,21 +371,16 @@ export class EnhancedConditionsAPI {
             return;
         }
 
-        if (!(entities instanceof Array)) {
-            entities = [entities];
-        }
+        entities = Sidekick.toArray(entities);
 
         const results = [];
 
-        for (let entity of entities) {
+        for (const entity of entities) {
             const actor = EnhancedConditionsAPI.getActorFromEntity(entity, { sendTelemetry: false });
+            const effects = Sidekick.toArray(actor?.effects.contents);
+            if (!effects.length) continue;
 
-            const effects = actor?.effects.contents;
-
-            if (!effects) continue;
-
-            const effectIds = effects instanceof Array ? effects.map(e => e.getFlag(BUTLER.NAME, BUTLER.FLAGS.enhancedConditions.conditionId)) : effects.getFlag(BUTLER.NAME, BUTLER.FLAGS.enhancedConditions.conditionId);
-
+            const effectIds = effects.filter(e => Sidekick.conditionId(e)).map(e => Sidekick.conditionId(e));
             if (!effectIds.length) continue;
 
             const entityConditions = {
@@ -453,7 +404,7 @@ export class EnhancedConditionsAPI {
      * Gets the Active Effect data (if any) for the given condition
      * @param {*} condition the id of the Condition to get
      */
-    static getActiveEffect(condition, {sendTelemetry=true}={}) {
+    static getActiveEffect(condition, { sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.getActiveEffect);
         }
@@ -468,13 +419,13 @@ export class EnhancedConditionsAPI {
      * @param {Boolean} warn  whether or not to raise warnings on errors
      * @returns {Map | Object} A Map containing the Actor Id and the Condition Active Effect instances if any
      */
-    static getConditionEffects(entities, map=null, {warn=true, sendTelemetry=true}={}) {
+    static getConditionEffects(entities, map = null, { warn = true, sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.getConditionEffects);
         }
 
         if (!entities) {
-            // First check for any controlled tokens
+            //First check for any controlled tokens
             if (canvas?.tokens?.controlled.length) entities = canvas.tokens.controlled;
             else if (game.user.character) entities = game.user.character;
         }
@@ -485,7 +436,7 @@ export class EnhancedConditionsAPI {
             return;
         }
 
-        entities = entities instanceof Array ? entities : [entities];
+        entities = Sidekick.toArray(entities);
 
         if (!map) map = Sidekick.getSetting(BUTLER.SETTING_KEYS.enhancedConditions.map);
 
@@ -497,7 +448,7 @@ export class EnhancedConditionsAPI {
 
             if (!activeEffects.length) continue;
 
-            const conditionEffects = activeEffects.filter(ae => ae.getFlag(BUTLER.NAME, BUTLER.FLAGS.enhancedConditions.conditionId));
+            const conditionEffects = activeEffects.filter(ae => Sidekick.conditionId(ae));
 
             if (!conditionEffects.length) continue;
 
@@ -517,13 +468,13 @@ export class EnhancedConditionsAPI {
      * @param {Boolean} [options.warn]  whether or not to output notifications
      * @returns {Boolean} hasCondition  Returns true if one or more of the provided entities has one or more of the provided conditions
      * @example
-     * // Check for the "Blinded" condition on Actor "Bob"
+     * //Check for the "Blinded" condition on Actor "Bob"
      * game.succ.hasCondition("Blinded", game.actors.getName("Bob"));
      * @example
-     * // Check for the "Charmed" and "Deafened" conditions on the controlled tokens
+     * //Check for the "Charmed" and "Deafened" conditions on the controlled tokens
      * game.succ.hasCondition(["Charmed", "Deafened"]);
      */
-    static hasCondition(conditionId, entities=null, {warn=true, sendTelemetry=true}={}) {
+    static hasCondition(conditionId, entities = null, { warn = true, sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.hasCondition);
         }
@@ -535,10 +486,10 @@ export class EnhancedConditionsAPI {
         }
 
         if (!entities) {
-            // First check for any controlled tokens
+            //First check for any controlled tokens
             if (canvas?.tokens?.controlled.length) entities = canvas.tokens.controlled;
 
-            // Then check if the user has an assigned character
+            //Then check if the user has an assigned character
             else if (game.user.character) entities = game.user.character;
         }
 
@@ -548,7 +499,7 @@ export class EnhancedConditionsAPI {
             return false;
         }
 
-        entities = entities instanceof Array ? entities : [entities];
+        entities = Sidekick.toArray(entities);
 
         let conditions = EnhancedConditions.lookupConditionById(conditionId);
 
@@ -558,19 +509,19 @@ export class EnhancedConditionsAPI {
             return false;
         }
 
-        conditions = EnhancedConditions._prepareStatusEffects(conditions);
-        conditions = conditions instanceof Array ? conditions : [conditions];
+        conditions = Sidekick.toArray(EnhancedConditions._prepareStatusEffects(conditions));
 
-        for (let entity of entities) {
+        for (const entity of entities) {
             const actor = EnhancedConditionsAPI.getActorFromEntity(entity, { sendTelemetry: false });
 
             if (!actor.effects.size) continue;
 
-            const conditionEffect = actor.effects.contents.some(ae => {
-                return conditions.some(e => e?.flags[BUTLER.NAME][BUTLER.FLAGS.enhancedConditions.conditionId] === ae.getFlag(BUTLER.NAME, BUTLER.FLAGS.enhancedConditions.conditionId));
+            const hasCondition = actor.effects.contents.some(ae => {
+                const aeId = Sidekick.conditionId(ae);
+                return aeId !== undefined && conditions.some(e => Sidekick.conditionId(e) === aeId);
             });
 
-            if (conditionEffect) return true;
+            if (hasCondition) return true;
         }
 
         return false;
@@ -581,7 +532,7 @@ export class EnhancedConditionsAPI {
      * @param {Actor | Token | TokenDocument | String} entity  The entity to convert
      * @returns {Actor} Returns the converted Actor or null if none was found
      */
-    static getActorFromEntity(entity, {sendTelemetry=true}={}) {
+    static getActorFromEntity(entity, { sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.hasCondition);
         }
@@ -593,18 +544,18 @@ export class EnhancedConditionsAPI {
      * @param sceneId The scene ID on which the function looks for token actors to remove the conditions from; defaults to current scene.
      * @param confirmed Boolean to skip the confirmation dialogue.
      */
-    static async removeTemporaryEffects(sceneId = false, confirmed = false, {sendTelemetry=true}={}) {
+    static async removeTemporaryEffects(sceneId = false, confirmed = false, { sendTelemetry = true } = {}) {
         if (sendTelemetry) {
             TelemetryUtils.sendAPITelemetry(EnhancedConditionsAPI.removeTemporaryEffects);
         }
 
-        const scene = sceneId ? game.scenes.get(sceneId) : game.scenes.current
+        const scene = sceneId ? game.scenes.get(sceneId) : game.scenes.current;
         if (confirmed) {
             executeRemoval();
         } else {
             foundry.applications.api.DialogV2.confirm({
                 window: { title: "ENHANCED_CONDITIONS.Dialog.RemoveTemporaryEffects.Name" },
-                content: game.i18n.format("ENHANCED_CONDITIONS.Dialog.RemoveTemporaryEffects.Body", {sceneName: `${scene.navName} (${scene.name})`}),
+                content: game.i18n.format("ENHANCED_CONDITIONS.Dialog.RemoveTemporaryEffects.Body", { sceneName: `${scene.navName} (${scene.name})` }),
                 yes: {
                     callback: () => {
                         executeRemoval();
@@ -614,21 +565,21 @@ export class EnhancedConditionsAPI {
         }
 
         async function executeRemoval() {
-            const sceneTokens = scene.tokens
-            const nonCombatTokens = sceneTokens.filter(t => t.inCombat === false)
+            const sceneTokens = scene.tokens;
+            const nonCombatTokens = sceneTokens.filter(t => t.inCombat === false);
             if (!nonCombatTokens) {
-                return
+                return;
             }
             for (let token of nonCombatTokens) {
-                const actor = token.actor
-                const tokenEffects = actor.effects
-                const durationEffects = tokenEffects.filter(e => typeof e.duration.rounds === "number" && !isNaN(e.duration.rounds) && isFinite(e.duration.rounds))
-                let effectsToDeleteIds = []
+                const actor = token.actor;
+                const tokenEffects = actor.effects;
+                const durationEffects = tokenEffects.filter(e => typeof e.duration.rounds === "number" && !isNaN(e.duration.rounds) && isFinite(e.duration.rounds));
+                let effectsToDeleteIds = [];
                 for (let effect of durationEffects) {
-                    effectsToDeleteIds.push(effect.id)
+                    effectsToDeleteIds.push(effect.id);
                 }
                 if (durationEffects) {
-                    await actor.deleteEmbeddedDocuments('ActiveEffect', effectsToDeleteIds)
+                    await actor.deleteEmbeddedDocuments('ActiveEffect', effectsToDeleteIds);
                 }
             }
         }

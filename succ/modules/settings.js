@@ -164,6 +164,13 @@ export function registerSettings() {
         config: true,
     });
 
+    Sidekick.registerSetting(BUTLER.SETTING_KEYS.enhancedConditions.applyConditionSortDirection, {
+        scope: "user",
+        type: String,
+        default: "",
+        config: false,
+    });
+
     Sidekick.registerSetting(BUTLER.SETTING_KEYS.telemetryOptOut, {
         name: game.i18n.localize("succ.SETTINGS.TelemetryOptOutN"),
         hint: game.i18n.localize("succ.SETTINGS.TelemetryOptOutH"),
