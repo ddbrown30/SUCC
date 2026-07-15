@@ -815,29 +815,37 @@ export class TelemetryUtils {
                 Error.prepareStackTrace = (_, stack) => stack;
                 const stack = err.stack;
 
-                const stackStrings = stack
-                    .map(s => s.toString().replace(/https?:\/\/[^/]+/g, ""))
-                    .filter(s => !s.includes("TelemetryUtils.sendAPITelemetry"));
+                const isFirefox = typeof stack === "string";
+
+                const urlRegex = /https?:\/\/[^/]+/g;
+                let stackStrings = isFirefox
+                    ? stack.replace(urlRegex, "").split("\n")
+                    : stack.map(s => s.toString().replace(urlRegex, ""));
+                stackStrings = stackStrings.filter(s => s && !s.includes("TelemetryUtils.sendAPITelemetry"));
+
+                const getPath = isFirefox
+                    ? s => s.match(/@((?:\/modules|\/systems)\/[^:]+)/)?.[1]
+                    : s => {
+                        const filename = s.getFileName?.();
+                        return filename ? new URL(filename).pathname : null;
+                    };
+
                 let source = "Unknown";
 
-                for (const s of stack) {
-                    const filename = s?.getFileName?.();
-                    if (!filename) continue;
+                const stackLoopObject = isFirefox ? stackStrings : stack;
+                for (const s of stackLoopObject) {
+                    const path = getPath(s);
+                    if (!path) continue;
 
-                    let path = new URL(filename).pathname;
                     if (path.startsWith("/modules/succ/")) continue;
 
                     if (path.startsWith("/modules/")) {
-                        path = path.substring("/modules/".length);
-                        const nextSlash = path.indexOf("/");
-                        source = path.substring(0, nextSlash);
+                        source = path.substring("/modules/".length).split("/", 1)[0];
                         break;
                     }
 
-                    if (path.startsWith("/system/")) {
-                        path = path.substring("/system/".length);
-                        const nextSlash = path.indexOf("/");
-                        source = path.substring(0, nextSlash);
+                    if (path.startsWith("/systems/")) {
+                        source = path.substring("/systems/".length).split("/", 1)[0];
                         break;
                     }
 
