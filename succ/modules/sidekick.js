@@ -151,8 +151,8 @@ export class Sidekick {
 
     static async setModuleFlag(obj, flag, data) {
         if (obj.setFlag) return await obj.setFlag(BUTLER.NAME, flag, data);
-        obj.flags = obj.flags ?? {};
-        obj.flags[BUTLER.NAME] = obj.flags[BUTLER.NAME] ?? {};
+        obj.flags ??= {};
+        obj.flags[BUTLER.NAME] ??= {};
         obj.flags[BUTLER.NAME][flag] = data;
     }
 
@@ -171,6 +171,11 @@ export class Sidekick {
      */
     static convertMapToArray(map) {
         return map instanceof Map ? Array.from(map.entries()) : null;
+    }
+
+    static toArray(value) {
+        if (!value) return [];
+        return value instanceof Array ? value : [value];
     }
 
     /**
@@ -735,6 +740,10 @@ export class Sidekick {
         }
 
         await Sidekick.setSetting(BUTLER.SETTING_KEYS.enhancedConditions.specialStatusEffectMapping, CONFIG.specialStatusEffects);
+    }
+
+    static conditionId(effect) {
+        return Sidekick.getModuleFlag(effect, BUTLER.FLAGS.enhancedConditions.conditionId);
     }
 }
 

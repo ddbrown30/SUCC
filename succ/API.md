@@ -75,7 +75,7 @@
 ## EnhancedConditionsAPI
 API functions for interacting with EnhancedConditions
 
-**Kind**: global class  
+**Kind**: global class
 
 * [EnhancedConditionsAPI](#EnhancedConditionsAPI)
     * [.addCondition(conditionId, [entities])](#EnhancedConditionsAPI.addCondition)
@@ -95,35 +95,37 @@ API functions for interacting with EnhancedConditions
 ### EnhancedConditionsAPI.addCondition(conditionId, [entities])
 Applies the named condition to the provided entities (Actors or Tokens)
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | conditionId | <code>Array.&lt;String&gt;</code> \| <code>String</code> |  | the id of the condition to add |
 | [entities] | <code>Array.&lt;Actor&gt;</code> \| <code>Array.&lt;Token&gt;</code> \| <code>Actor</code> \| <code>Token</code> | <code></code> | one or more Actors or Tokens to apply the Condition to |
-| [options.allowDuplicates] | <code>Boolean</code> | <code>false</code> | if one or more of the Conditions specified is already active on the Entity, this will still add the Condition. Use in conjunction with `replaceExisting` to determine how duplicates are handled |
-| [options.replaceExisting] | <code>Boolean</code> | <code>false</code> | whether or not to replace existing Conditions with any duplicates in the `conditionName` parameter. If `allowDuplicates` is true and `replaceExisting` is false then a duplicate condition is created. Has no effect if `allowDuplicates` is `false` |
+| [options.allowDuplicates] | <code>Boolean</code> | <code>false</code> | if one or more of the Conditions specified is already active on the Entity, this will still add the Condition. |
 | [options.forceOverlay] | <code>Boolean</code> | <code>false</code> | if true, this condition will appear as an overlay regardless of its normal behaviour |
 | [options.effectOptions] | <code>Boolean</code> |  | additional options that are added to a property to be used by elsewhere in the code |
 
-**Example**  
+**Example**
 ```js
-// Add the Condition "Blinded" to an Actor named "Bob". Duplicates will not be created.game.succ.addCondition("Blinded", game.actors.getName("Bob"));
+// Add the Condition "Blinded" to an Actor named "Bob". Duplicates will not be created.
+game.succ.addCondition("Blinded", game.actors.getName("Bob"));
 ```
-**Example**  
+**Example**
 ```js
-// Add the Condition "Charmed" to the currently controlled Token/s. Duplicates will not be created.game.succ.addCondition("Charmed");
+// Add the Condition "Charmed" to the currently controlled Token/s. Duplicates will not be created.
+game.succ.addCondition("Charmed");
 ```
-**Example**  
+**Example**
 ```js
-// Add the Conditions "Blinded" and "Charmed" to the targeted Token/s and create duplicates, replacing any existing Conditions of the same names.game.succ.addCondition(["Blinded", "Charmed"], [...game.user.targets], {allowDuplicates: true, replaceExisting: true});
+// Add the Conditions "Blinded" and "Charmed" to the targeted Token/s and create duplicates, replacing any existing Conditions of the same names.
+game.succ.addCondition(["Blinded", "Charmed"], [...game.user.targets], {allowDuplicates: true, replaceExisting: true});
 ```
 <a name="EnhancedConditionsAPI.removeCondition"></a>
 
 ### EnhancedConditionsAPI.removeCondition(conditionId, entities)
 Removes one or more named conditions from an Entity (Actor/Token)
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -131,40 +133,44 @@ Removes one or more named conditions from an Entity (Actor/Token)
 | entities | <code>Actor</code> \| <code>Token</code> | <code></code> | One or more Actors or Tokens |
 | options.warn | <code>Boolean</code> |  | whether or not to raise warnings on errors |
 
-**Example**  
+**Example**
 ```js
-// Remove Condition named "Blinded" from an Actor named Bobgame.succ.removeCondition("Blinded", game.actors.getName("Bob"));
+// Remove Condition named "Blinded" from an Actor named Bob
+game.succ.removeCondition("Blinded", game.actors.getName("Bob"));
 ```
-**Example**  
+**Example**
 ```js
-// Remove Condition named "Charmed" from the currently controlled Token, but don't show any warnings if it fails.game.succ.removeCondition("Charmed", {warn=false});
+// Remove Condition named "Charmed" from the currently controlled Token, but don't show any warnings if it fails.
+game.succ.removeCondition("Charmed", {warn=false});
 ```
 <a name="EnhancedConditionsAPI.removeAllConditions"></a>
 
 ### EnhancedConditionsAPI.removeAllConditions(entities)
 Removes all conditions from the provided entities
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | entities | <code>Actors</code> \| <code>Tokens</code> | <code></code> | One or more Actors or Tokens to remove Conditions from |
 | options.warn | <code>Boolean</code> |  | output notifications |
 
-**Example**  
+**Example**
 ```js
-// Remove all Conditions on an Actor named Bobgame.succ.removeAllConditions(game.actors.getName("Bob"));
+// Remove all Conditions on an Actor named Bob
+game.succ.removeAllConditions(game.actors.getName("Bob"));
 ```
-**Example**  
+**Example**
 ```js
-// Remove all Conditions on the currently controlled Tokengame.succ.removeAllConditions();
+// Remove all Conditions on the currently controlled Token
+game.succ.removeAllConditions();
 ```
 <a name="EnhancedConditionsAPI.getCondition"></a>
 
 ### EnhancedConditionsAPI.getCondition(conditionId, map)
 Gets a condition by id from the Condition Map
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -177,7 +183,7 @@ Gets a condition by id from the Condition Map
 ### EnhancedConditionsAPI.getConditionFrom(conditionId, entity)
 Gets a condition by id from given Actor or String
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -190,28 +196,30 @@ Gets a condition by id from given Actor or String
 ### EnhancedConditionsAPI.getConditions(entities) ⇒ <code>Array</code>
 Retrieves all active conditions for one or more given entities (Actors or Tokens)
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
-**Returns**: <code>Array</code> - entityConditionMap  a mapping of conditions for each provided entity  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
+**Returns**: <code>Array</code> - entityConditionMap  a mapping of conditions for each provided entity
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | entities | <code>Actor</code> \| <code>Token</code> | <code></code> | one or more Actors or Tokens to get Conditions from |
 | options.warn | <code>Boolean</code> |  | whether or not to raise warnings on errors |
 
-**Example**  
+**Example**
 ```js
-// Get conditions for an Actor named "Bob"game.succ.getConditions(game.actors.getName("Bob"));
+// Get conditions for an Actor named "Bob"
+game.succ.getConditions(game.actors.getName("Bob"));
 ```
-**Example**  
+**Example**
 ```js
-// Get conditions for the currently controlled Tokengame.succ.getConditions();
+// Get conditions for the currently controlled Token
+game.succ.getConditions();
 ```
 <a name="EnhancedConditionsAPI.getActiveEffect"></a>
 
 ### EnhancedConditionsAPI.getActiveEffect(condition)
 Gets the Active Effect data (if any) for the given condition
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -222,8 +230,8 @@ Gets the Active Effect data (if any) for the given condition
 ### EnhancedConditionsAPI.getConditionEffects(entities, map, warn) ⇒ <code>Map</code> \| <code>Object</code>
 Gets any Active Effect instances present on the entities (Actor/s or Token/s) that are mapped Conditions
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
-**Returns**: <code>Map</code> \| <code>Object</code> - A Map containing the Actor Id and the Condition Active Effect instances if any  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
+**Returns**: <code>Map</code> \| <code>Object</code> - A Map containing the Actor Id and the Condition Active Effect instances if any
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -236,8 +244,8 @@ Gets any Active Effect instances present on the entities (Actor/s or Token/s) th
 ### EnhancedConditionsAPI.hasCondition(conditionId, entities, [options]) ⇒ <code>Boolean</code>
 Checks if the provided Entity (Actor or Token) has the given condition
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
-**Returns**: <code>Boolean</code> - hasCondition  Returns true if one or more of the provided entities has one or more of the provided conditions  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
+**Returns**: <code>Boolean</code> - hasCondition  Returns true if one or more of the provided entities has one or more of the provided conditions
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -246,21 +254,23 @@ Checks if the provided Entity (Actor or Token) has the given condition
 | [options] | <code>Object</code> |  | options object |
 | [options.warn] | <code>Boolean</code> |  | whether or not to output notifications |
 
-**Example**  
+**Example**
 ```js
-// Check for the "Blinded" condition on Actor "Bob"game.succ.hasCondition("Blinded", game.actors.getName("Bob"));
+// Check for the "Blinded" condition on Actor "Bob"
+game.succ.hasCondition("Blinded", game.actors.getName("Bob"));
 ```
-**Example**  
+**Example**
 ```js
-// Check for the "Charmed" and "Deafened" conditions on the controlled tokensgame.succ.hasCondition(["Charmed", "Deafened"]);
+// Check for the "Charmed" and "Deafened" conditions on the controlled tokens
+game.succ.hasCondition(["Charmed", "Deafened"]);
 ```
 <a name="EnhancedConditionsAPI.getActorFromEntity"></a>
 
 ### EnhancedConditionsAPI.getActorFromEntity(entity) ⇒ <code>Actor</code>
 Converts the provided entity into an Actor
 
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
-**Returns**: <code>Actor</code> - Returns the converted Actor or null if none was found  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
+**Returns**: <code>Actor</code> - Returns the converted Actor or null if none was found
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -269,7 +279,7 @@ Converts the provided entity into an Actor
 <a name="EnhancedConditionsAPI.removeTemporaryEffects"></a>
 
 ### EnhancedConditionsAPI.removeTemporaryEffects(sceneId, confirmed)
-**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)  
+**Kind**: static method of [<code>EnhancedConditionsAPI</code>](#EnhancedConditionsAPI)
 
 | Param | Default | Description |
 | --- | --- | --- |
@@ -281,7 +291,7 @@ Converts the provided entity into an Actor
 ## EnhancedConditionsPowers
 Builds a mapping between status icons and journal entries that represent conditions
 
-**Kind**: global class  
+**Kind**: global class
 
 * [EnhancedConditionsPowers](#EnhancedConditionsPowers)
     * [.boostLowerTrait(actor, condition, boost)](#EnhancedConditionsPowers.boostLowerTrait)
@@ -296,7 +306,7 @@ Builds a mapping between status icons and journal entries that represent conditi
 ### EnhancedConditionsPowers.boostLowerTrait(actor, condition, boost)
 Adds a boost or lower trait effect to an actor
 
-**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)  
+**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -309,7 +319,7 @@ Adds a boost or lower trait effect to an actor
 ### EnhancedConditionsPowers.boostLowerBuilder(effect, actor, trait, type, degree)
 Creates and applies the active effects for a boost or lower trait condition
 
-**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)  
+**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -324,7 +334,7 @@ Creates and applies the active effects for a boost or lower trait condition
 ### EnhancedConditionsPowers.smite(actor, condition)
 Adds a smite effect to an actor
 
-**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)  
+**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -336,7 +346,7 @@ Adds a smite effect to an actor
 ### EnhancedConditionsPowers.smiteBuilder(effect, weaponName, damageBonus)
 Creates and applies the active effects for a smite condition
 
-**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)  
+**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -349,7 +359,7 @@ Creates and applies the active effects for a smite condition
 ### EnhancedConditionsPowers.protection(actor, condition)
 Adds a protection effect to an actor
 
-**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)  
+**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -361,7 +371,7 @@ Adds a protection effect to an actor
 ### EnhancedConditionsPowers.protectionBuilder(effect, protectionBonus, type)
 Creates and applies the active effects for a protection condition
 
-**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)  
+**Kind**: static method of [<code>EnhancedConditionsPowers</code>](#EnhancedConditionsPowers)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -374,7 +384,7 @@ Creates and applies the active effects for a protection condition
 ## EnhancedConditions
 Builds a mapping between status icons and journal entries that represent conditions
 
-**Kind**: global class  
+**Kind**: global class
 
 * [EnhancedConditions](#EnhancedConditions)
     * [._onReady()](#EnhancedConditions._onReady)
@@ -415,49 +425,54 @@ Builds a mapping between status icons and journal entries that represent conditi
 <a name="EnhancedConditions._onReady"></a>
 
 ### EnhancedConditions.\_onReady()
-Ready Hook handlerSteps:1. Get default maps2. Get mapType3. Get Condition Map4. Override status effects
+Ready Hook handler
+Steps:
+1. Get default maps
+2. Get mapType
+3. Get Condition Map
+4. Override status effects
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions._onUpdateActor"></a>
 
 ### EnhancedConditions.\_onUpdateActor()
 Hooks on token updates. If the update includes effects, calls the journal entry lookup
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions._onCreateActiveEffect"></a>
 
 ### EnhancedConditions.\_onCreateActiveEffect(actor, update, options, userId)
 Create Active Effect handler
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| actor | <code>\*</code> | 
-| update | <code>\*</code> | 
-| options | <code>\*</code> | 
-| userId | <code>\*</code> | 
+| actor | <code>\*</code> |
+| update | <code>\*</code> |
+| options | <code>\*</code> |
+| userId | <code>\*</code> |
 
 <a name="EnhancedConditions._onDeleteActiveEffect"></a>
 
 ### EnhancedConditions.\_onDeleteActiveEffect(actor, update, options, userId)
 Create Active Effect handler
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| actor | <code>\*</code> | 
-| update | <code>\*</code> | 
-| options | <code>\*</code> | 
-| userId | <code>\*</code> | 
+| actor | <code>\*</code> |
+| update | <code>\*</code> |
+| options | <code>\*</code> |
+| userId | <code>\*</code> |
 
 <a name="EnhancedConditions._onRenderChatMessage"></a>
 
 ### EnhancedConditions.\_onRenderChatMessage(app, html, data)
 Render Chat Message handler
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 **Todo**
 
 - [ ] move to chatlog render?
@@ -465,40 +480,40 @@ Render Chat Message handler
 
 | Param | Type |
 | --- | --- |
-| app | <code>\*</code> | 
-| html | <code>\*</code> | 
-| data | <code>\*</code> | 
+| app | <code>\*</code> |
+| html | <code>\*</code> |
+| data | <code>\*</code> |
 
 <a name="EnhancedConditions._onRenderChatLog"></a>
 
 ### EnhancedConditions.\_onRenderChatLog(app, html, data)
 ChatLog render hook
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| app | <code>\*</code> | 
-| html | <code>\*</code> | 
-| data | <code>\*</code> | 
+| app | <code>\*</code> |
+| html | <code>\*</code> |
+| data | <code>\*</code> |
 
 <a name="EnhancedConditions._onRenderCombatTracker"></a>
 
 ### EnhancedConditions.\_onRenderCombatTracker(app, html, data)
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| app | <code>\*</code> | 
-| html | <code>\*</code> | 
-| data | <code>\*</code> | 
+| app | <code>\*</code> |
+| html | <code>\*</code> |
+| data | <code>\*</code> |
 
 <a name="EnhancedConditions._processActiveEffectChange"></a>
 
 ### EnhancedConditions.\_processActiveEffectChange(effect, type)
 Process the addition/removal of an Active Effect
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -510,7 +525,7 @@ Process the addition/removal of an Active Effect
 ### EnhancedConditions.applyEffectOptions(effect, actor)
 Processes effect options and applies them to active effects
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -522,7 +537,7 @@ Processes effect options and applies them to active effects
 ### EnhancedConditions.lookupEntryMapping(effectIds, [map])
 Checks statusEffect icons against map and returns matching condition mappings
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -534,7 +549,7 @@ Checks statusEffect icons against map and returns matching condition mappings
 ### EnhancedConditions.outputChatMessage()
 Output one or more condition entries to chat
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 **Todo**
 
 - [ ] refactor to use actor or token
@@ -544,7 +559,7 @@ Output one or more condition entries to chat
 ### EnhancedConditions.toggleDefeated(entities)
 Marks a Combatants for a particular entity as defeated
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -554,47 +569,47 @@ Marks a Combatants for a particular entity as defeated
 <a name="EnhancedConditions.activateConviction"></a>
 
 ### EnhancedConditions.activateConviction()
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions.deactivateConviction"></a>
 
 ### EnhancedConditions.deactivateConviction()
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions.removeOtherConditions"></a>
 
 ### EnhancedConditions.removeOtherConditions(entity, conditionId)
 For a given entity, removes conditions other than the one supplied
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| entity | <code>\*</code> | 
-| conditionId | <code>\*</code> | 
+| entity | <code>\*</code> |
+| conditionId | <code>\*</code> |
 
 <a name="EnhancedConditions._processMacros"></a>
 
 ### EnhancedConditions.\_processMacros(macroIds, entity)
 Process macros based on given Ids
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Default |
 | --- | --- | --- |
-| macroIds | <code>\*</code> |  | 
-| entity | <code>\*</code> | <code></code> | 
+| macroIds | <code>\*</code> |  |
+| entity | <code>\*</code> | <code></code> |
 
 <a name="EnhancedConditions.updateConditionTimestamps"></a>
 
 ### EnhancedConditions.updateConditionTimestamps()
 Update condition added/removed timestamps
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions._createLabButton"></a>
 
 ### EnhancedConditions.\_createLabButton(html)
 Creates a button for the Condition Lab
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -605,49 +620,49 @@ Creates a button for the Condition Lab
 ### EnhancedConditions.\_toggleLabButtonVisibility(display)
 Determines whether to display the combat utility belt div in the settings sidebar
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
-**Todo:**: extract to helper in sidekick class?  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
+**Todo:**: extract to helper in sidekick class?
 
 | Param | Type |
 | --- | --- |
-| display | <code>Boolean</code> | 
+| display | <code>Boolean</code> |
 
 <a name="EnhancedConditions._loadDefaultMap"></a>
 
 ### EnhancedConditions.\_loadDefaultMap()
 Returns the default maps supplied with the module
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
-**Todo:**: map to entryId and then rebuild on import  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
+**Todo:**: map to entryId and then rebuild on import
 <a name="EnhancedConditions._prepareMap"></a>
 
 ### EnhancedConditions.\_prepareMap(conditionMap)
 Parse the provided Condition Map and prepare it for storage, validating and correcting bad or missing data where possible
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| conditionMap | <code>\*</code> | 
+| conditionMap | <code>\*</code> |
 
 <a name="EnhancedConditions._backupCoreEffects"></a>
 
 ### EnhancedConditions.\_backupCoreEffects()
 Duplicate the core status icons, freeze the duplicate then store a copy in settings
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions._backupCoreSpecialStatusEffects"></a>
 
 ### EnhancedConditions.\_backupCoreSpecialStatusEffects()
 Duplicate the core special status effect mappings, freeze the duplicate then store a copy in settings
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions.lookupConditionById"></a>
 
 ### EnhancedConditions.lookupConditionById(conditionId, map)
 Gets one or more conditions from the map by their name
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -659,30 +674,30 @@ Gets one or more conditions from the map by their name
 ### EnhancedConditions.\_updateStatusEffects(conditionMap)
 Updates the CONFIG.statusEffect effects with Condition Map ones
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| conditionMap | <code>\*</code> | 
+| conditionMap | <code>\*</code> |
 
 <a name="EnhancedConditions._prepareStatusEffects"></a>
 
 ### EnhancedConditions.\_prepareStatusEffects(conditionMap) ⇒ <code>Array</code>
 Converts the given Condition Map (one or more Conditions) into a Status Effects array or object
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
-**Returns**: <code>Array</code> - statusEffects  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
+**Returns**: <code>Array</code> - statusEffects
 
 | Param | Type |
 | --- | --- |
-| conditionMap | <code>Array</code> \| <code>Object</code> | 
+| conditionMap | <code>Array</code> \| <code>Object</code> |
 
 <a name="EnhancedConditions._prepareActiveEffects"></a>
 
 ### EnhancedConditions.\_prepareActiveEffects(effects)
 Prepares one or more ActiveEffects from Conditions for placement on an actor
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -693,52 +708,52 @@ Prepares one or more ActiveEffects from Conditions for placement on an actor
 ### EnhancedConditions.getConditionIcons()
 Returns just the icon side of the map
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions.getIconsByCondition"></a>
 
 ### EnhancedConditions.getIconsByCondition(condition)
 Retrieves a condition icon by its mapped name
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| condition | <code>\*</code> | 
+| condition | <code>\*</code> |
 
 <a name="EnhancedConditions.getConditionsByIcon"></a>
 
 ### EnhancedConditions.getConditionsByIcon(icon)
 Retrieves a condition name by its mapped icon
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| icon | <code>\*</code> | 
+| icon | <code>\*</code> |
 
 <a name="EnhancedConditions.mapFromJson"></a>
 
 ### EnhancedConditions.mapFromJson(json)
 Parses a condition map JSON and returns a map
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 
 | Param | Type |
 | --- | --- |
-| json | <code>\*</code> | 
+| json | <code>\*</code> |
 
 <a name="EnhancedConditions.getDefaultMap"></a>
 
 ### EnhancedConditions.getDefaultMap()
 Returns the default condition map for a given system
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="EnhancedConditions.buildDefaultMap"></a>
 
 ### EnhancedConditions.buildDefaultMap()
 Builds a default map for a given system
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 **Todo**
 
 - [ ] #281 update for active effects
@@ -746,15 +761,16 @@ Builds a default map for a given system
 <a name="EnhancedConditions.updateConditionMapFromDefaults"></a>
 
 ### EnhancedConditions.updateConditionMapFromDefaults()
-Updates the condition map to include any changes from the default map and system settingsIf the user has made their own changes to a condition, the condition in the default map will be ignored
+Updates the condition map to include any changes from the default map and system settings
+If the user has made their own changes to a condition, the condition in the default map will be ignored
 
-**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)  
+**Kind**: static method of [<code>EnhancedConditions</code>](#EnhancedConditions)
 <a name="Sidekick"></a>
 
 ## Sidekick
 Provides helper methods for use elsewhere in the module (and has your back in a melee)
 
-**Kind**: global class  
+**Kind**: global class
 
 * [Sidekick](#Sidekick)
     * [.createSUCCDiv(html)](#Sidekick.createSUCCDiv)
@@ -801,131 +817,131 @@ Provides helper methods for use elsewhere in the module (and has your back in a 
 ### Sidekick.createSUCCDiv(html)
 Creates the SUCC div in the Sidebar
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| html | <code>\*</code> | 
+| html | <code>\*</code> |
 
 <a name="Sidekick.getSetting"></a>
 
 ### Sidekick.getSetting(key) ⇒ <code>Object</code>
 Get a single setting using the provided key
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: <code>Object</code> - setting  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: <code>Object</code> - setting
 
 | Param | Type |
 | --- | --- |
-| key | <code>\*</code> | 
+| key | <code>\*</code> |
 
 <a name="Sidekick.getAllSettings"></a>
 
 ### Sidekick.getAllSettings() ⇒ <code>Array</code>
 Get all SUCC settings
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: <code>Array</code> - settings  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: <code>Array</code> - settings
 <a name="Sidekick.setSetting"></a>
 
 ### Sidekick.setSetting(key, value, awaitResult) ⇒ <code>Promise</code> \| <code>ClientSetting</code>
 Sets a single game setting
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type | Default |
 | --- | --- | --- |
-| key | <code>\*</code> |  | 
-| value | <code>\*</code> |  | 
-| awaitResult | <code>\*</code> | <code>false</code> | 
+| key | <code>\*</code> |  |
+| value | <code>\*</code> |  |
+| awaitResult | <code>\*</code> | <code>false</code> |
 
 <a name="Sidekick.registerSetting"></a>
 
 ### Sidekick.registerSetting(key, metadata) ⇒ <code>ClientSettings.register</code>
 Register a single setting using the provided key and setting data
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| key | <code>\*</code> | 
-| metadata | <code>\*</code> | 
+| key | <code>\*</code> |
+| metadata | <code>\*</code> |
 
 <a name="Sidekick.registerMenu"></a>
 
 ### Sidekick.registerMenu(key, metadata) ⇒ <code>ClientSettings.registerMenu</code>
 Register a menu setting using the provided key and setting data
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| key | <code>\*</code> | 
-| metadata | <code>\*</code> | 
+| key | <code>\*</code> |
+| metadata | <code>\*</code> |
 
 <a name="Sidekick.registerAllSettings"></a>
 
 ### Sidekick.registerAllSettings(settingsData) ⇒ <code>Array</code>
 Register all provided setting data
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| settingsData | <code>\*</code> | 
+| settingsData | <code>\*</code> |
 
 <a name="Sidekick.fetchJsons"></a>
 
 ### Sidekick.fetchJsons(source, path)
 Use FilePicker to browse then Fetch one or more JSONs and return them
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| source | <code>\*</code> | 
-| path | <code>\*</code> | 
+| source | <code>\*</code> |
+| path | <code>\*</code> |
 
 <a name="Sidekick.fetchJson"></a>
 
 ### Sidekick.fetchJson(file) ⇒
 Fetch a JSON from a given file
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: JSON | null  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: JSON | null
 
 | Param | Type |
 | --- | --- |
-| file | <code>File</code> | 
+| file | <code>File</code> |
 
 <a name="Sidekick.validateObject"></a>
 
 ### Sidekick.validateObject(object) ⇒ <code>Boolean</code>
 Validate that an object is actually an object
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| object | <code>Object</code> | 
+| object | <code>Object</code> |
 
 <a name="Sidekick.convertMapToArray"></a>
 
 ### Sidekick.convertMapToArray(map)
 Convert any ES6 Maps/Sets to objects for settings use
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| map | <code>Map</code> | 
+| map | <code>Map</code> |
 
 <a name="Sidekick.getKeyByValue"></a>
 
 ### Sidekick.getKeyByValue(object, value)
 Retrieves a key using the given value
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -937,252 +953,255 @@ Retrieves a key using the given value
 ### Sidekick.getInverseMap()
 Inverts the key and value in a map
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Todo:**: rework  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Todo:**: rework
 <a name="Sidekick.handlebarsHelpers"></a>
 
 ### Sidekick.handlebarsHelpers()
 Adds additional handlebars helpers
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 <a name="Sidekick.jQueryHelpers"></a>
 
 ### Sidekick.jQueryHelpers()
 Adds additional jquery helpers
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 <a name="Sidekick.getTerms"></a>
 
 ### Sidekick.getTerms(arr)
 Takes an array of terms (eg. name parts) and returns groups of neighbouring terms
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| arr | <code>\*</code> | 
+| arr | <code>\*</code> |
 
 <a name="Sidekick.escapeRegExp"></a>
 
 ### Sidekick.escapeRegExp(string) ⇒ <code>String</code>
 Escapes regex special chars
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: <code>String</code> - escapedString  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: <code>String</code> - escapedString
 
 | Param | Type |
 | --- | --- |
-| string | <code>String</code> | 
+| string | <code>String</code> |
 
 <a name="Sidekick.coerceType"></a>
 
 ### Sidekick.coerceType(target, type) ⇒ <code>\*</code>
 Attempts to coerce a target value into the exemplar's type
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: <code>\*</code> - coercedValue  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: <code>\*</code> - coercedValue
 
 | Param | Type |
 | --- | --- |
-| target | <code>\*</code> | 
-| type | <code>\*</code> | 
+| target | <code>\*</code> |
+| type | <code>\*</code> |
 
 <a name="Sidekick.buildFormData"></a>
 
 ### Sidekick.buildFormData(FD)
-Builds a FD returned from FormDataExtended into a formData arrayBorrowed from foundry.js
+Builds a FD returned from FormDataExtended into a formData array
+Borrowed from foundry.js
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| FD | <code>\*</code> | 
+| FD | <code>\*</code> |
 
 <a name="Sidekick.createId"></a>
 
 ### Sidekick.createId(existingIds)
 Get a random unique Id, checking an optional supplied array of ids for a match
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| existingIds | <code>\*</code> | 
+| existingIds | <code>\*</code> |
 
 <a name="Sidekick.toTitleCase"></a>
 
 ### Sidekick.toTitleCase(string)
 Sets a string to Title Case
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| string | <code>\*</code> | 
+| string | <code>\*</code> |
 
 <a name="Sidekick.replaceOnDocument"></a>
 
 ### Sidekick.replaceOnDocument(pattern, string, param2)
 Parses HTML and replaces instances of a matched pattern
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| pattern | <code>\*</code> | 
-| string | <code>\*</code> | 
-| param2 | <code>\*</code> | 
+| pattern | <code>\*</code> |
+| string | <code>\*</code> |
+| param2 | <code>\*</code> |
 
 <a name="Sidekick.getTextNodesIn"></a>
 
 ### Sidekick.getTextNodesIn(el) ⇒ <code>jQuery</code>
 Get text nodes in a given element
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| el | <code>\*</code> | 
+| el | <code>\*</code> |
 
 <a name="Sidekick.generateUniqueSlugId"></a>
 
 ### Sidekick.generateUniqueSlugId(string, idList)
 For a given string generate a slug, optionally checking a list of existing Ids for uniqueness
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| string | <code>\*</code> | 
-| idList | <code>\*</code> | 
+| string | <code>\*</code> |
+| idList | <code>\*</code> |
 
 <a name="Sidekick.getNameFromFilePath"></a>
 
 ### Sidekick.getNameFromFilePath(path) ⇒ <code>String</code>
 For a given file path, find the filename and then apply title case
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| path | <code>String</code> | 
+| path | <code>String</code> |
 
 <a name="Sidekick.getFirstGM"></a>
 
 ### Sidekick.getFirstGM() ⇒ <code>GM</code> \| <code>null</code>
 Gets the first GM user
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: <code>GM</code> \| <code>null</code> - a GM object or null if none found  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: <code>GM</code> \| <code>null</code> - a GM object or null if none found
 <a name="Sidekick.isFirstGM"></a>
 
 ### Sidekick.isFirstGM() ⇒ <code>Boolean</code>
 Checks if the current user is the first active GM
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 <a name="Sidekick.getActorFromUuid"></a>
 
 ### Sidekick.getActorFromUuid(uuid)
 Gets an Actor from an Actor or Token UUID
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| uuid | <code>\*</code> | 
+| uuid | <code>\*</code> |
 
 <a name="Sidekick.findArrayDuplicates"></a>
 
 ### Sidekick.findArrayDuplicates(arrayToCheck, filterProperty) ⇒ <code>Array</code>
 Filters an array down to just its duplicate elements based on the property specified
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| arrayToCheck | <code>\*</code> | 
-| filterProperty | <code>\*</code> | 
+| arrayToCheck | <code>\*</code> |
+| filterProperty | <code>\*</code> |
 
 <a name="Sidekick.identifyArrayDuplicatesByProperty"></a>
 
 ### Sidekick.identifyArrayDuplicatesByProperty(arrayToCheck, filterProperty) ⇒ <code>Boolean</code>
 Returns true for each array element that is a duplicate based on the property specified
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| arrayToCheck | <code>\*</code> | 
-| filterProperty | <code>\*</code> | 
+| arrayToCheck | <code>\*</code> |
+| filterProperty | <code>\*</code> |
 
 <a name="Sidekick.loadTemplates"></a>
 
 ### Sidekick.loadTemplates()
 Loads templates for partials
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 <a name="Sidekick.getDocumentOwners"></a>
 
 ### Sidekick.getDocumentOwners(document) ⇒ <code>Array</code>
 Retrieves all the owners of a given document
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| document | <code>\*</code> | 
+| document | <code>\*</code> |
 
 <a name="Sidekick.toCamelCase"></a>
 
 ### Sidekick.toCamelCase(string, delimiter) ⇒
 Converts the given string to camelCase using the provided delimiter to break up words
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: the converted string  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: the converted string
 
 | Param | Type |
 | --- | --- |
-| string | <code>String</code> | 
-| delimiter | <code>String</code> | 
+| string | <code>String</code> |
+| delimiter | <code>String</code> |
 
-**Example**  
+**Example**
 ```js
 Sidekick.toCamelCase("my-cool-string", "-") // returns "myCoolString"
 ```
 <a name="Sidekick.shallowCompare"></a>
 
 ### Sidekick.shallowCompare()
-Compares all the keys within two objectsReturns true if the objects matchThis function is not recursive so if either object contains objects, the check will return false even if the values match
+Compares all the keys within two objects
+Returns true if the objects match
+This function is not recursive so if either object contains objects, the check will return false even if the values match
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 <a name="Sidekick.getTraitOptions"></a>
 
 ### Sidekick.getTraitOptions(actor)
 Creates an array with the full list of traits for a given actor
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| actor | <code>Actor</code> | 
+| actor | <code>Actor</code> |
 
 <a name="Sidekick.getLocalizedAttributeName"></a>
 
 ### Sidekick.getLocalizedAttributeName(actor)
 Returns the localized string for a given attribute
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type |
 | --- | --- |
-| actor | <code>Actor</code> | 
+| actor | <code>Actor</code> |
 
 <a name="Sidekick.sortSkills"></a>
 
 ### Sidekick.sortSkills(allSkills)
 Sorts a list of skills
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1193,151 +1212,151 @@ Sorts a list of skills
 ### Sidekick.getOptionBySpecialStatusEffect(option) ⇒ <code>String</code>
 Get the enum for a special status effect in Foundry based on the option name
 
-**Kind**: static method of [<code>Sidekick</code>](#Sidekick)  
-**Returns**: <code>String</code> - enum for the special status effect  
+**Kind**: static method of [<code>Sidekick</code>](#Sidekick)
+**Returns**: <code>String</code> - enum for the special status effect
 
 | Param | Type |
 | --- | --- |
-| option | <code>\*</code> | 
+| option | <code>\*</code> |
 
 <a name="Signal"></a>
 
 ## Signal
 Initiates module classes (and shines a light on the dark night sky)
 
-**Kind**: global class  
+**Kind**: global class
 <a name="Signal.lightUp"></a>
 
 ### Signal.lightUp()
 Registers hooks
 
-**Kind**: static method of [<code>Signal</code>](#Signal)  
+**Kind**: static method of [<code>Signal</code>](#Signal)
 <a name="defaultOptions"></a>
 
 ## defaultOptions
 defaultOptions
 
-**Kind**: global variable  
+**Kind**: global variable
 <a name="defaultOptions"></a>
 
 ## defaultOptions
 defaultOptions
 
-**Kind**: global variable  
+**Kind**: global variable
 <a name="getData"></a>
 
 ## getData() ⇒ <code>Object</code>
 Gets data for template rendering
 
-**Kind**: global function  
-**Returns**: <code>Object</code> - data  
+**Kind**: global function
+**Returns**: <code>Object</code> - data
 <a name="_updateObject"></a>
 
 ## \_updateObject(event, formData)
 Update Object on Form Submission
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type |
 | --- | --- |
-| event | <code>\*</code> | 
-| formData | <code>\*</code> | 
+| event | <code>\*</code> |
+| formData | <code>\*</code> |
 
 <a name="getData"></a>
 
 ## getData() ⇒ <code>Object</code>
 Gets data for template rendering
 
-**Kind**: global function  
-**Returns**: <code>Object</code> - data  
+**Kind**: global function
+**Returns**: <code>Object</code> - data
 <a name="activateListeners"></a>
 
 ## activateListeners(html)
 Application listeners
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type |
 | --- | --- |
-| html | <code>jQuery</code> | 
+| html | <code>jQuery</code> |
 
 <a name="_onCheckboxChange"></a>
 
 ## \_onCheckboxChange(event)
 Checkbox change event handler
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type |
 | --- | --- |
-| event | <code>\*</code> | 
+| event | <code>\*</code> |
 
 <a name="_onSpecialStatusEffectToggle"></a>
 
 ## \_onSpecialStatusEffectToggle(event)
 Special Status Effect toggle handler
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type |
 | --- | --- |
-| event | <code>\*</code> | 
+| event | <code>\*</code> |
 
 <a name="_updateObject"></a>
 
 ## \_updateObject(event, formData)
 Update Object on Form Submission
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type |
 | --- | --- |
-| event | <code>\*</code> | 
-| formData | <code>\*</code> | 
+| event | <code>\*</code> |
+| formData | <code>\*</code> |
 
 <a name="getSpecialStatusEffectByField"></a>
 
 ## getSpecialStatusEffectByField(field) ⇒ <code>String</code>
 Get the enum for a special status effect in Foundry based on the field name
 
-**Kind**: global function  
-**Returns**: <code>String</code> - enum for the special status effect  
+**Kind**: global function
+**Returns**: <code>String</code> - enum for the special status effect
 
 | Param | Type |
 | --- | --- |
-| field | <code>\*</code> | 
+| field | <code>\*</code> |
 
 <a name="setSpecialStatusEffectMapping"></a>
 
 ## setSpecialStatusEffectMapping(effect, conditionId)
 Sets the special status effect to the provided condition Id
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type | Default |
 | --- | --- | --- |
-| effect | <code>\*</code> |  | 
-| conditionId | <code>\*</code> | <code></code> | 
+| effect | <code>\*</code> |  |
+| conditionId | <code>\*</code> | <code></code> |
 
 <a name="getData"></a>
 
 ## getData(options)
 Get data for template rendering
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type |
 | --- | --- |
-| options | <code>\*</code> | 
+| options | <code>\*</code> |
 
 <a name="_updateObject"></a>
 
 ## \_updateObject(formData)
 Override default update object behaviour
 
-**Kind**: global function  
+**Kind**: global function
 
 | Param | Type |
 | --- | --- |
-| formData | <code>\*</code> | 
+| formData | <code>\*</code> |
 

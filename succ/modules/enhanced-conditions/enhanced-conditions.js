@@ -451,9 +451,7 @@ export class EnhancedConditions {
      * @param {Array} [map=[]]  the condition map to look in
      */
     static lookupEntryMapping(effectIds, map = []) {
-        if (!(effectIds instanceof Array)) {
-            effectIds = [effectIds];
-        }
+        effectIds = Sidekick.toArray(effectIds);
 
         if (!map.length) {
             map = Sidekick.getSetting(BUTLER.SETTING_KEYS.enhancedConditions.map);
@@ -474,7 +472,7 @@ export class EnhancedConditions {
     static async outputChatMessage(entity, entries, options = { type: "active" }) {
         const isActorEntity = entity instanceof Actor;
         // Turn a single condition mapping entry into an array
-        entries = entries instanceof Array ? entries : [entries];
+        entries = Sidekick.toArray(entries);
 
         if (!entity || !entries.length) return;
 
@@ -574,13 +572,13 @@ export class EnhancedConditions {
             // First check for any controlled tokens
             if (canvas?.tokens?.controlled.length) entities = canvas.tokens.controlled;
             else if (game.user.character) entities = game.user.character;
+
+            if (!entities) {
+                return;
+            }
         }
 
-        if (!entities) {
-            return;
-        }
-
-        entities = entities instanceof Array ? entities : [entities];
+        entities = Sidekick.toArray(entities);
 
         const tokens = entities.flatMap(e => (e instanceof foundry.canvas.placeables.Token || e instanceof TokenDocument) ? e : e instanceof Actor ? e.getActiveTokens() : null);
 
@@ -644,13 +642,10 @@ export class EnhancedConditions {
      */
     static async removeOtherConditions(entity, conditionId) {
         const entityConditions = await EnhancedConditionsAPI.getConditions(entity, { warn: false, sendTelemetry: false });
-        let conditions = entityConditions ? entityConditions.conditions : [];
-        conditions = conditions instanceof Array ? conditions : [conditions];
-
+        const conditions = Sidekick.toArray(entityConditions?.conditions);
         if (!conditions.length) return;
 
         const removeConditions = conditions.filter(c => c.id !== conditionId);
-
         if (!removeConditions.length) return;
 
         for (const c of removeConditions) await EnhancedConditionsAPI.removeCondition(c.id, entity, { warn: true, sendTelemetry: false });
@@ -958,9 +953,8 @@ export class EnhancedConditions {
      * @param {Array} map  the condition map to search
      */
     static lookupConditionById(conditionId, map = null) {
-        if (!conditionId) return;
-
-        conditionId = conditionId instanceof Array ? conditionId : [conditionId];
+        conditionId = Sidekick.toArray(conditionId);
+        if (!conditionId.length) return;
 
         if (!map) map = Sidekick.getSetting(BUTLER.SETTING_KEYS.enhancedConditions.map);
 
@@ -1045,8 +1039,7 @@ export class EnhancedConditions {
      * @returns {Array} statusEffects
      */
     static _prepareStatusEffects(conditionMap, {excludeDisabledStatusEffects=false}={}) {
-        conditionMap = conditionMap instanceof Array ? conditionMap : [conditionMap];
-
+        conditionMap = Sidekick.toArray(conditionMap);
         if (!conditionMap.length) return [];
 
         const existingIds = [];
